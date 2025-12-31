@@ -258,6 +258,38 @@
             font-family: 'JetBrains Mono', monospace;
             font-weight: 500;
         }
+        
+        /* Visitor Counter */
+        .visitor-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            margin-bottom: 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 30px;
+        }
+        .visitor-icon {
+            font-size: 1.2rem;
+            animation: blink 2s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .visitor-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+        .visitor-count {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
         .loading { display: flex; align-items: center; justify-content: center; height: 200px; }
         .loading-spinner { width: 50px; height: 50px; border: 3px solid var(--bg-tertiary); border-top-color: var(--neon-blue); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -762,10 +794,81 @@
                 ⚔️ XRP X Army <span>@chachakobe4er</span>
             </a>
             
+            <!-- Visitor Counter -->
+            <div class="visitor-counter">
+                <span class="visitor-icon">👁️</span>
+                <span class="visitor-label">Visitors:</span>
+                <span class="visitor-count" id="visitorCount">--</span>
+            </div>
+            
             <p class="footer-text">XRP WHALE WATCH • DATA FROM XRPSCAN API</p>
             <p class="timestamp" id="lastUpdate">Last updated: --</p>
         </footer>
     </div>
+    
+    <!-- CountAPI / Free Visitor Counter -->
+    <script>
+        // Visitor counter using countapi.xyz (free, no signup required)
+        async function updateVisitorCount() {
+            const namespace = 'xrp-whale-watch';
+            const key = 'visitors';
+            
+            try {
+                // Hit the counter (increments and returns count)
+                const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
+                const data = await response.json();
+                
+                if (data && data.value) {
+                    const countEl = document.getElementById('visitorCount');
+                    // Animate the number
+                    animateCounter(countEl, 0, data.value, 1500);
+                }
+            } catch (error) {
+                console.log('Visitor counter unavailable:', error);
+                // Fallback: try alternative counter
+                try {
+                    const altResponse = await fetch('https://api.counterapi.dev/v1/xrp-whale-watch/visits/up');
+                    const altData = await altResponse.json();
+                    if (altData && altData.count) {
+                        document.getElementById('visitorCount').textContent = formatVisitorCount(altData.count);
+                    }
+                } catch (e) {
+                    document.getElementById('visitorCount').textContent = '---';
+                }
+            }
+        }
+        
+        function animateCounter(element, start, end, duration) {
+            const range = end - start;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + range * easeOut);
+                
+                element.textContent = formatVisitorCount(current);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        function formatVisitorCount(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toLocaleString();
+        }
+        
+        // Update visitor count on page load
+        updateVisitorCount();
+    </script>
 
     <script>
         const CONFIG = {
