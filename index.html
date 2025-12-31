@@ -137,6 +137,7 @@
         .stat-value.orange { color: var(--neon-orange); }
         .stat-change { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; }
         .stat-change.positive { background: rgba(0, 255, 136, 0.1); color: var(--neon-green); }
+        .stat-change.negative { background: rgba(255, 0, 128, 0.1); color: var(--neon-pink); }
         .main-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; margin-bottom: 40px; }
         @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
         .card {
@@ -208,6 +209,55 @@
         .change-negative { color: var(--neon-pink); }
         .footer { text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 40px; }
         .footer-text { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; }
+        .footer-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .footer-link:hover {
+            color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.1);
+        }
+        .footer-divider {
+            color: var(--text-muted);
+        }
+        .footer-army {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 25px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(0, 212, 255, 0.15) 100%);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 30px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .footer-army:hover {
+            transform: scale(1.05);
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+        }
+        .footer-army span {
+            color: var(--neon-blue);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
         .loading { display: flex; align-items: center; justify-content: center; height: 200px; }
         .loading-spinner { width: 50px; height: 50px; border: 3px solid var(--bg-tertiary); border-top-color: var(--neon-blue); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -268,6 +318,87 @@
         .price-change.down {
             background: rgba(255, 0, 128, 0.15);
             color: var(--neon-pink);
+        }
+        
+        /* XRP Army Badge */
+        .xrp-army-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(0, 212, 255, 0.2) 100%);
+            border: 2px solid rgba(168, 85, 247, 0.5);
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: armyGlow 2s ease-in-out infinite alternate;
+        }
+        .xrp-army-badge:hover {
+            transform: translateY(-3px) scale(1.05);
+            border-color: var(--neon-purple);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        }
+        @keyframes armyGlow {
+            from { box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+            to { box-shadow: 0 0 25px rgba(0, 212, 255, 0.4); }
+        }
+        .army-icon {
+            font-size: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        .army-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .army-handle {
+            font-size: 0.85rem;
+            color: var(--neon-blue);
+            font-weight: 500;
+        }
+        
+        /* Navigation Links */
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .nav-link:hover {
+            transform: translateY(-3px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            background: rgba(0, 212, 255, 0.1);
+        }
+        .nav-icon {
+            font-size: 1.2rem;
+        }
+        .nav-text {
+            color: var(--text-primary);
+        }
+        .nav-link:hover .nav-text {
+            color: var(--neon-blue);
         }
         
         /* Popup Overlay Styles */
@@ -422,12 +553,31 @@
             <h1 class="logo">XRP WHALE WATCH</h1>
             <p class="tagline">Real-time Rich List Analytics</p>
             
+            <!-- XRP X Army Follow -->
+            <a href="https://twitter.com/chachakobe4er" target="_blank" class="xrp-army-badge">
+                <span class="army-icon">⚔️</span>
+                <span class="army-text">XRP X Army</span>
+                <span class="army-handle">@chachakobe4er</span>
+            </a>
+            
             <!-- XRP Price Display -->
             <div class="price-display">
                 <span class="price-label">XRP/USD</span>
                 <span class="price-value" id="xrpPrice">$--</span>
                 <span class="price-change up" id="xrpChange">--%</span>
             </div>
+            
+            <!-- Navigation Links -->
+            <nav class="nav-links">
+                <a href="https://xrp-1-0jnc.onrender.com/" target="_blank" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">XRP ETF Tracker</span>
+                </a>
+                <a href="https://xrpexchange.streamlit.app/" target="_blank" class="nav-link">
+                    <span class="nav-icon">💎</span>
+                    <span class="nav-text">XRP Exchange Holdings</span>
+                </a>
+            </nav>
             
             <div class="live-indicator"><span class="live-dot"></span><span>LIVE DATA</span></div>
         </header>
@@ -437,7 +587,7 @@
                 <div class="stat-icon">💰</div>
                 <div class="stat-label">Total XRP Tracked</div>
                 <div class="stat-value blue" id="totalXRP">--</div>
-                <div class="stat-change positive" id="totalChange"><span>↑</span> <span>Loading...</span></div>
+                <div class="stat-change" id="totalChange" style="display: none;"></div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">👥</div>
@@ -600,6 +750,18 @@
         </div>
 
         <footer class="footer">
+            <!-- Footer Links -->
+            <div class="footer-links">
+                <a href="https://xrp-1-0jnc.onrender.com/" target="_blank" class="footer-link">📊 XRP ETF Tracker</a>
+                <span class="footer-divider">•</span>
+                <a href="https://xrpexchange.streamlit.app/" target="_blank" class="footer-link">💎 XRP Exchange Holdings</a>
+            </div>
+            
+            <!-- XRP Army -->
+            <a href="https://twitter.com/chachakobe4er" target="_blank" class="footer-army">
+                ⚔️ XRP X Army <span>@chachakobe4er</span>
+            </a>
+            
             <p class="footer-text">XRP WHALE WATCH • DATA FROM XRPSCAN API</p>
             <p class="timestamp" id="lastUpdate">Last updated: --</p>
         </footer>
@@ -914,6 +1076,17 @@
             document.getElementById('summaryChangedXRP').textContent = (changedXRP >= 0 ? '+' : '') + formatNumber(changedXRP) + ' XRP';
             document.getElementById('summaryNetXRP').textContent = (netXRP >= 0 ? '+' : '') + formatNumber(netXRP) + ' XRP';
             document.getElementById('summaryNetXRP').style.color = netXRP >= 0 ? 'var(--neon-green)' : 'var(--neon-pink)';
+            
+            // Update the Total XRP change indicator in the stat card
+            const totalChangeEl = document.getElementById('totalChange');
+            if (netXRP !== 0) {
+                const isPositive = netXRP >= 0;
+                totalChangeEl.innerHTML = `<span>${isPositive ? '↑' : '↓'}</span> <span>${formatNumber(Math.abs(netXRP))} XRP (24h)</span>`;
+                totalChangeEl.className = 'stat-change ' + (isPositive ? 'positive' : 'negative');
+                totalChangeEl.style.display = 'inline-flex';
+            } else {
+                totalChangeEl.style.display = 'none';
+            }
         }
 
         function detectAlerts(changes) {
