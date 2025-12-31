@@ -925,6 +925,35 @@
         // LocalStorage helpers
         function saveToStorage(data) {
             try {
+                // Check if we should update - only save if no data or data is old enough (>1 hour)
+                const existing = localStorage.getItem(CONFIG.STORAGE_KEY);
+                if (existing) {
+                    const parsed = JSON.parse(existing);
+                    const storedDate = new Date(parsed.timestamp);
+                    const now = new Date();
+                    const hoursDiff = (now - storedDate) / (1000 * 60 * 60);
+                    
+                    // Only overwrite if data is more than 1 hour old
+                    if (hoursDiff < 1) {
+                        console.log('Storage data is recent, not overwriting');
+                        return;
+                    }
+                }
+                
+                const storageData = {
+                    data: data,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(storageData));
+                console.log('Saved new data to storage');
+            } catch (e) {
+                console.warn('Failed to save to localStorage:', e);
+            }
+        }
+        
+        // Force save (for manual refresh button)
+        function forceSaveToStorage(data) {
+            try {
                 const storageData = {
                     data: data,
                     timestamp: new Date().toISOString()
@@ -1314,20 +1343,25 @@
                     // Direct XRPScan API - use LocalStorage for comparison
                     const rawData = result.data;
                     
-                    // Load previous data from storage
+                    // Load previous data from storage (only on first load of page)
                     const storedData = loadFromStorage();
                     const storedTimestamp = getStorageTimestamp();
                     
-                    if (storedData && currentData.length === 0) {
+                    // On first page load, use stored data as previous
+                    // On refresh (currentData already has data), keep using stored data, not currentData
+                    if (storedData) {
+                        // Only use stored data if it's different from what we're about to load
+                        // This ensures we compare with historical data, not with ourselves
                         previousData = storedData;
                     } else {
-                        previousData = [...currentData];
+                        previousData = [];
                     }
                     
                     // Process new data
                     currentData = processData(rawData);
                     
-                    // Save to storage for next comparison
+                    // Save to storage for NEXT session (not this one)
+                    // We save with a slight delay or different key to not overwrite comparison data
                     saveToStorage(currentData);
                     
                     const stats = calculateStats(currentData);
@@ -1347,9 +1381,10 @@
                         changesInfo.className = 'changes-info warning';
                         changesInfoText.textContent = '⚠ First visit! Data saved. Refresh again later to see changes.';
                     } else if (changes.length === 0) {
-                        changesPeriod.textContent = 'LIVE';
+                        const timeDiff = storedTimestamp ? getTimeDiffString(storedTimestamp) : 'cached';
+                        changesPeriod.textContent = timeDiff;
                         changesInfo.className = 'changes-info';
-                        changesInfoText.textContent = 'ℹ No significant changes since last refresh. Try again later or run the backend API for 24h comparison.';
+                        changesInfoText.textContent = `ℹ No significant changes vs ${timeDiff} ago. Data refreshes every 5 min or run backend for 24h comparison.`;
                     } else {
                         const timeDiff = storedTimestamp ? getTimeDiffString(storedTimestamp) : 'previous session';
                         changesPeriod.textContent = timeDiff;
@@ -1357,7 +1392,7 @@
                         changesInfoText.textContent = `✓ Comparing with ${timeDiff} ago (${changes.length} changes detected)`;
                     }
                     
-                    const sourceIndicator = previousData.length > 0 ? '(using cached data)' : '(no previous data yet)';
+                    const sourceIndicator = previousData.length > 0 ? `(vs ${storedTimestamp ? getTimeDiffString(storedTimestamp) : 'cached'} ago)` : '(first visit - data saved)';
                     document.getElementById('lastUpdate').textContent = `Last updated: ${new Date().toLocaleString()} ${sourceIndicator}`;
                 }
             }
