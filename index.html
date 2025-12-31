@@ -414,11 +414,16 @@
 
     <script>
         const CONFIG = {
-            API_URL: 'https://api.xrpscan.com/api/v1/balances',
+            // Backend API (if running api_server.py)
+            BACKEND_API_URL: 'http://localhost:5000/api/data',
+            // Direct XRPScan API (fallback)
+            XRPSCAN_API_URL: 'https://api.xrpscan.com/api/v1/balances',
             WHALE_THRESHOLD: 1000000,
             SIGNIFICANT_CHANGE: 1000,
             LARGE_CHANGE: 100000,
-            REFRESH_INTERVAL: 300000
+            REFRESH_INTERVAL: 300000,
+            // LocalStorage key for persisting data
+            STORAGE_KEY: 'xrp_whale_watch_data'
         };
 
         let currentData = [];
@@ -427,6 +432,39 @@
         let currentSort = { column: 'rank', direction: 'asc' };
         let changesSort = { column: 'change', direction: 'desc' };
         let changesData = [];
+        let useBackendAPI = false; // Will be set based on availability
+
+        // LocalStorage helpers
+        function saveToStorage(data) {
+            try {
+                const storageData = {
+                    data: data,
+                    timestamp: new Date().toISOString()
+                };
+                localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(storageData));
+            } catch (e) {
+                console.warn('Failed to save to localStorage:', e);
+            }
+        }
+
+        function loadFromStorage() {
+            try {
+                const stored = localStorage.getItem(CONFIG.STORAGE_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    // Check if data is from today or yesterday (valid for comparison)
+                    const storedDate = new Date(parsed.timestamp);
+                    const now = new Date();
+                    const hoursDiff = (now - storedDate) / (1000 * 60 * 60);
+                    if (hoursDiff < 48) { // Data less than 48 hours old
+                        return parsed.data;
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to load from localStorage:', e);
+            }
+            return null;
+        }
 
         function formatNumber(num) {
             if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
@@ -478,10 +516,29 @@
         }
 
         async function fetchData() {
+            // Try backend API first (includes historical comparison)
             try {
-                const response = await fetch(CONFIG.API_URL);
-                if (!response.ok) throw new Error('API request failed');
-                return await response.json();
+                const backendResponse = await fetch(CONFIG.BACKEND_API_URL, { 
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (backendResponse.ok) {
+                    const data = await backendResponse.json();
+                    useBackendAPI = true;
+                    console.log('Using backend API with historical data');
+                    return { type: 'backend', data };
+                }
+            } catch (e) {
+                console.log('Backend API not available, using direct XRPScan API');
+            }
+            
+            // Fallback to direct XRPScan API
+            try {
+                const response = await fetch(CONFIG.XRPSCAN_API_URL);
+                if (!response.ok) throw new Error('XRPScan API request failed');
+                const data = await response.json();
+                useBackendAPI = false;
+                return { type: 'direct', data };
             } catch (error) {
                 console.error('Error fetching data:', error);
                 return null;
@@ -688,24 +745,91 @@
             body.innerHTML = alerts.map(alert => `<div class="alert-item ${alert.type === 'NEW_WHALE' ? 'whale' : ''}"><div class="alert-icon">${alert.icon}</div><div class="alert-content"><div class="alert-title">${alert.title}</div><div class="alert-description">${alert.description}</div></div><div class="alert-time">Just now</div></div>`).join('');
         }
 
+        // Convert backend alerts to dashboard format
+        function convertBackendAlerts(backendAlerts) {
+            return backendAlerts.map(alert => {
+                if (alert.type === 'LARGE_MOVEMENT') {
+                    return {
+                        type: 'LARGE_MOVEMENT',
+                        icon: '⚠️',
+                        title: `Large ${alert.direction === 'inflow' ? 'Inflow' : 'Outflow'} Detected`,
+                        description: `${alert.name} (${truncateAddress(alert.account)}) moved ${formatNumber(Math.abs(alert.change))} XRP`
+                    };
+                } else if (alert.type === 'NEW_WHALE') {
+                    return {
+                        type: 'NEW_WHALE',
+                        icon: '🐋',
+                        title: 'New Whale Detected',
+                        description: `${truncateAddress(alert.account)} entered with ${formatNumber(alert.balance)} XRP`
+                    };
+                }
+                return alert;
+            });
+        }
+
         async function refreshData() {
             const refreshBtn = document.getElementById('refreshBtn');
             refreshBtn.classList.add('loading');
-            const rawData = await fetchData();
-            if (rawData) {
-                previousData = [...currentData];
-                currentData = processData(rawData);
-                const stats = calculateStats(currentData);
-                updateStats(stats);
-                updateRichList(currentData);
-                updateDistributionChart(currentData);
-                const changes = compareData(currentData, previousData);
-                changesData = changes;
-                updateChangesTable(changes);
-                updateChangeSummary(changes);
-                updateAlerts(detectAlerts(changes));
-                document.getElementById('lastUpdate').textContent = `Last updated: ${new Date().toLocaleString()}`;
+            
+            const result = await fetchData();
+            
+            if (result) {
+                if (result.type === 'backend') {
+                    // Backend API provides everything pre-computed
+                    const apiData = result.data;
+                    
+                    currentData = apiData.accounts;
+                    changesData = apiData.changes || [];
+                    
+                    // Use backend-provided stats
+                    updateStats(apiData.stats);
+                    updateRichList(currentData);
+                    updateDistributionChart(currentData);
+                    updateChangesTable(changesData);
+                    updateChangeSummary(changesData);
+                    
+                    // Convert and display alerts from backend
+                    const alerts = convertBackendAlerts(apiData.alerts || []);
+                    updateAlerts(alerts);
+                    
+                    // Show data source indicator
+                    const sourceIndicator = apiData.hasPreviousData ? '(with 24h comparison)' : '(no previous data)';
+                    document.getElementById('lastUpdate').textContent = `Last updated: ${new Date().toLocaleString()} ${sourceIndicator}`;
+                    
+                } else {
+                    // Direct XRPScan API - use LocalStorage for comparison
+                    const rawData = result.data;
+                    
+                    // Load previous data from storage
+                    const storedData = loadFromStorage();
+                    if (storedData && currentData.length === 0) {
+                        previousData = storedData;
+                    } else {
+                        previousData = [...currentData];
+                    }
+                    
+                    // Process new data
+                    currentData = processData(rawData);
+                    
+                    // Save to storage for next comparison
+                    saveToStorage(currentData);
+                    
+                    const stats = calculateStats(currentData);
+                    updateStats(stats);
+                    updateRichList(currentData);
+                    updateDistributionChart(currentData);
+                    
+                    const changes = compareData(currentData, previousData);
+                    changesData = changes;
+                    updateChangesTable(changes);
+                    updateChangeSummary(changes);
+                    updateAlerts(detectAlerts(changes));
+                    
+                    const sourceIndicator = previousData.length > 0 ? '(using cached data)' : '(no previous data yet)';
+                    document.getElementById('lastUpdate').textContent = `Last updated: ${new Date().toLocaleString()} ${sourceIndicator}`;
+                }
             }
+            
             refreshBtn.classList.remove('loading');
         }
 
