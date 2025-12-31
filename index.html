@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XRP Rich List Tracker | Whale Watch</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -21,51 +21,32 @@
             --text-primary: #ffffff;
             --text-secondary: #8892a6;
             --text-muted: #4a5568;
-            --border-glow: rgba(0, 212, 255, 0.3);
             --gradient-1: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%);
             --gradient-2: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
             --gradient-3: linear-gradient(135deg, #ff6b35 0%, #ff0080 100%);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'JetBrains Mono', monospace;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
-            position: relative;
         }
-
-        /* Animated background */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: 
                 radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(0, 255, 136, 0.03) 0%, transparent 70%);
+                radial-gradient(ellipse at 80% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
-
-        /* Grid lines overlay */
         body::after {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background-image: 
                 linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
@@ -73,34 +54,17 @@
             pointer-events: none;
             z-index: 0;
         }
-
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 40px 0 60px;
-            position: relative;
-        }
-
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        .header { text-align: center; padding: 40px 0 60px; position: relative; }
         .header::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 50%;
+            bottom: 0; left: 50%;
             transform: translateX(-50%);
-            width: 200px;
-            height: 2px;
+            width: 200px; height: 2px;
             background: var(--gradient-1);
             box-shadow: 0 0 20px var(--neon-blue);
         }
-
         .logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 3.5rem;
@@ -110,23 +74,13 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 60px rgba(0, 212, 255, 0.5);
-            margin-bottom: 10px;
             animation: glow 3s ease-in-out infinite alternate;
         }
-
         @keyframes glow {
             from { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5)); }
             to { filter: drop-shadow(0 0 40px rgba(168, 85, 247, 0.5)); }
         }
-
-        .tagline {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-
+        .tagline { font-size: 0.9rem; color: var(--text-secondary); letter-spacing: 4px; text-transform: uppercase; }
         .live-indicator {
             display: inline-flex;
             align-items: center;
@@ -140,28 +94,17 @@
             color: var(--neon-green);
             letter-spacing: 2px;
         }
-
         .live-dot {
-            width: 8px;
-            height: 8px;
+            width: 8px; height: 8px;
             background: var(--neon-green);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(1.2); }
         }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
         .stat-card {
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -172,92 +115,30 @@
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
-
         .stat-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 3px;
             background: var(--gradient-1);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 212, 255, 0.1);
-        }
-
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-
+        .stat-card:hover { transform: translateY(-4px); border-color: rgba(0, 212, 255, 0.2); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+        .stat-card:hover::before { opacity: 1; }
         .stat-card.whale::before { background: var(--gradient-3); }
         .stat-card.distribution::before { background: var(--gradient-2); }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 12px;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
+        .stat-icon { font-size: 2rem; margin-bottom: 12px; }
+        .stat-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+        .stat-value { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 700; }
         .stat-value.blue { color: var(--neon-blue); }
         .stat-value.green { color: var(--neon-green); }
         .stat-value.purple { color: var(--neon-purple); }
         .stat-value.orange { color: var(--neon-orange); }
-
-        .stat-change {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: 8px;
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 20px;
-        }
-
-        .stat-change.positive {
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--neon-green);
-        }
-
-        .stat-change.negative {
-            background: rgba(255, 0, 128, 0.1);
-            color: var(--neon-pink);
-        }
-
-        /* Main Content Grid */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        @media (max-width: 1200px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Card Styles */
+        .stat-change { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; }
+        .stat-change.positive { background: rgba(0, 255, 136, 0.1); color: var(--neon-green); }
+        .main-grid { display: grid; grid-template-columns: 1fr 400px; gap: 30px; margin-bottom: 40px; }
+        @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
         .card {
             background: var(--bg-card);
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -265,7 +146,6 @@
             overflow: hidden;
             backdrop-filter: blur(10px);
         }
-
         .card-header {
             display: flex;
             align-items: center;
@@ -274,36 +154,10 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             background: rgba(0, 0, 0, 0.2);
         }
-
-        .card-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card-badge {
-            font-size: 0.65rem;
-            padding: 4px 10px;
-            background: rgba(0, 212, 255, 0.15);
-            color: var(--neon-blue);
-            border-radius: 20px;
-            letter-spacing: 1px;
-        }
-
-        .card-body {
-            padding: 24px;
-        }
-
-        /* Rich List Table */
-        .rich-list {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
+        .card-title { font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 2px; display: flex; align-items: center; gap: 10px; }
+        .card-badge { font-size: 0.65rem; padding: 4px 10px; background: rgba(0, 212, 255, 0.15); color: var(--neon-blue); border-radius: 20px; }
+        .card-body { padding: 24px; }
+        .rich-list { width: 100%; border-collapse: collapse; }
         .rich-list th {
             text-align: left;
             padding: 12px 16px;
@@ -313,376 +167,84 @@
             letter-spacing: 2px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
         }
-
-        .rich-list td {
-            padding: 14px 16px;
-            font-size: 0.85rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            transition: background 0.2s ease;
-        }
-
-        .rich-list tr:hover td {
-            background: rgba(0, 212, 255, 0.05);
-        }
-
-        .rank {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            color: var(--text-muted);
-            width: 50px;
-        }
-
-        .rank.top-3 {
-            color: var(--neon-yellow);
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-
-        .account-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .account-address {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--neon-blue);
-        }
-
-        .account-name {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-        }
-
-        .balance {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 600;
-            color: var(--text-primary);
-            text-align: right;
-        }
-
-        .percentage {
-            font-size: 0.75rem;
-            color: var(--neon-purple);
-            text-align: right;
-        }
-
-        .whale-badge {
-            display: inline-block;
-            font-size: 1.2rem;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        /* Charts */
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin-bottom: 20px;
-        }
-
-        .chart-container.small {
-            height: 200px;
-        }
-
-        /* Distribution Bars */
-        .distribution-item {
-            margin-bottom: 20px;
-        }
-
-        .distribution-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.75rem;
-        }
-
-        .distribution-label span:first-child {
-            color: var(--text-secondary);
-        }
-
-        .distribution-label span:last-child {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--text-primary);
-        }
-
-        .distribution-bar {
-            height: 8px;
-            background: var(--bg-tertiary);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .distribution-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 1s ease;
-        }
-
+        .rich-list th:hover { color: var(--neon-blue); background: rgba(0, 212, 255, 0.05); }
+        .rich-list th.sortable::after { content: '⇅'; margin-left: 8px; opacity: 0.4; font-size: 0.8rem; }
+        .rich-list th.sort-asc::after { content: '↑'; opacity: 1; color: var(--neon-blue); }
+        .rich-list th.sort-desc::after { content: '↓'; opacity: 1; color: var(--neon-blue); }
+        .rich-list td { padding: 14px 16px; font-size: 0.85rem; border-bottom: 1px solid rgba(255, 255, 255, 0.03); transition: background 0.2s ease; }
+        .rich-list tr:hover td { background: rgba(0, 212, 255, 0.05); }
+        .rank { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--text-muted); width: 50px; }
+        .rank.top-3 { color: var(--neon-yellow); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .account-info { display: flex; flex-direction: column; gap: 4px; }
+        .account-address { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--neon-blue); }
+        .account-name { font-size: 0.7rem; color: var(--text-secondary); }
+        .balance { font-family: 'Orbitron', sans-serif; font-weight: 600; text-align: right; }
+        .percentage { font-size: 0.75rem; color: var(--neon-purple); text-align: right; }
+        .whale-badge { display: inline-block; font-size: 1.2rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .chart-container { position: relative; height: 300px; }
+        .chart-container.small { height: 200px; }
+        .distribution-item { margin-bottom: 20px; }
+        .distribution-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.75rem; }
+        .distribution-label span:first-child { color: var(--text-secondary); }
+        .distribution-label span:last-child { font-family: 'Orbitron', sans-serif; }
+        .distribution-bar { height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; }
+        .distribution-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
         .distribution-fill.blue { background: var(--gradient-1); }
         .distribution-fill.green { background: var(--gradient-2); }
         .distribution-fill.orange { background: var(--gradient-3); }
-
-        /* Alerts Section */
-        .alerts-container {
-            margin-top: 30px;
-        }
-
-        .alert-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px 20px;
-            background: rgba(255, 107, 53, 0.05);
-            border: 1px solid rgba(255, 107, 53, 0.2);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .alert-item:hover {
-            background: rgba(255, 107, 53, 0.1);
-            border-color: rgba(255, 107, 53, 0.4);
-        }
-
-        .alert-item.whale {
-            background: rgba(168, 85, 247, 0.05);
-            border-color: rgba(168, 85, 247, 0.2);
-        }
-
-        .alert-item.whale:hover {
-            background: rgba(168, 85, 247, 0.1);
-            border-color: rgba(168, 85, 247, 0.4);
-        }
-
-        .alert-icon {
-            font-size: 1.5rem;
-        }
-
-        .alert-content {
-            flex: 1;
-        }
-
-        .alert-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .alert-description {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .alert-time {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-        }
-
-        /* Changes Table */
-        .change-positive {
-            color: var(--neon-green);
-        }
-
-        .change-negative {
-            color: var(--neon-pink);
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 40px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: 40px;
-        }
-
-        .footer-text {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 200px;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid var(--bg-tertiary);
-            border-top-color: var(--neon-blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--bg-tertiary);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
-
-        /* Table scroll container */
-        .table-container {
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        /* Gini Meter */
-        .gini-meter {
-            position: relative;
-            height: 120px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .gini-value {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 700;
-            background: var(--gradient-3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .gini-label {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 8px;
-        }
-
-        .gini-scale {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 20px;
-            font-size: 0.65rem;
-            color: var(--text-muted);
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 4px;
-            padding: 4px;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-        }
-
-        .tab {
-            padding: 8px 16px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            letter-spacing: 1px;
-        }
-
-        .tab.active {
-            background: var(--bg-card);
-            color: var(--neon-blue);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .tab:hover:not(.active) {
-            color: var(--text-primary);
-        }
-
-        /* Refresh button */
-        .refresh-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: transparent;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 8px;
-            color: var(--neon-blue);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .refresh-btn:hover {
-            background: rgba(0, 212, 255, 0.1);
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
-        }
-
-        .refresh-btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .refresh-btn.loading svg {
-            animation: spin 1s linear infinite;
-        }
-
-        /* Data timestamp */
-        .timestamp {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 8px;
-        }
+        .alert-item { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: rgba(255, 107, 53, 0.05); border: 1px solid rgba(255, 107, 53, 0.2); border-radius: 12px; margin-bottom: 12px; }
+        .alert-item.whale { background: rgba(168, 85, 247, 0.05); border-color: rgba(168, 85, 247, 0.2); }
+        .alert-icon { font-size: 1.5rem; }
+        .alert-content { flex: 1; }
+        .alert-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .alert-description { font-size: 0.75rem; color: var(--text-secondary); }
+        .alert-time { font-size: 0.65rem; color: var(--text-muted); }
+        .change-positive { color: var(--neon-green); }
+        .change-negative { color: var(--neon-pink); }
+        .footer { text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 40px; }
+        .footer-text { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; }
+        .loading { display: flex; align-items: center; justify-content: center; height: 200px; }
+        .loading-spinner { width: 50px; height: 50px; border: 3px solid var(--bg-tertiary); border-top-color: var(--neon-blue); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+        .table-container { max-height: 600px; overflow-y: auto; }
+        .gini-meter { height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .gini-value { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 700; background: var(--gradient-3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gini-label { font-size: 0.7rem; color: var(--text-secondary); letter-spacing: 2px; text-transform: uppercase; margin-top: 8px; }
+        .gini-scale { display: flex; justify-content: space-between; width: 100%; margin-top: 20px; font-size: 0.65rem; color: var(--text-muted); }
+        .tabs { display: flex; gap: 4px; padding: 4px; background: var(--bg-tertiary); border-radius: 12px; }
+        .tab { padding: 8px 16px; font-size: 0.7rem; font-weight: 500; color: var(--text-secondary); background: transparent; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
+        .tab.active { background: var(--bg-card); color: var(--neon-blue); }
+        .tab:hover:not(.active) { color: var(--text-primary); }
+        .refresh-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: transparent; border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 8px; color: var(--neon-blue); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease; }
+        .refresh-btn:hover { background: rgba(0, 212, 255, 0.1); border-color: var(--neon-blue); }
+        .refresh-btn svg { width: 16px; height: 16px; }
+        .refresh-btn.loading svg { animation: spin 1s linear infinite; }
+        .timestamp { font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; }
+        .sort-info { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 10px; text-align: center; font-style: italic; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
             <h1 class="logo">XRP WHALE WATCH</h1>
             <p class="tagline">Real-time Rich List Analytics</p>
-            <div class="live-indicator">
-                <span class="live-dot"></span>
-                <span>LIVE DATA</span>
-            </div>
+            <div class="live-indicator"><span class="live-dot"></span><span>LIVE DATA</span></div>
         </header>
 
-        <!-- Stats Grid -->
-        <div class="stats-grid" id="statsGrid">
+        <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">💰</div>
                 <div class="stat-label">Total XRP Tracked</div>
                 <div class="stat-value blue" id="totalXRP">--</div>
-                <div class="stat-change positive" id="totalChange">
-                    <span>↑</span> <span>Loading...</span>
-                </div>
+                <div class="stat-change positive" id="totalChange"><span>↑</span> <span>Loading...</span></div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">👥</div>
@@ -699,17 +261,22 @@
                 <div class="stat-label">Whale Holdings</div>
                 <div class="stat-value orange" id="whaleHoldings">--</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-label">Mean Balance</div>
+                <div class="stat-value blue" id="meanBalance">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📉</div>
+                <div class="stat-label">Median Balance</div>
+                <div class="stat-value green" id="medianBalance">--</div>
+            </div>
         </div>
 
-        <!-- Main Content Grid -->
         <div class="main-grid">
-            <!-- Rich List -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">
-                        🏆 TOP HOLDERS
-                        <span class="card-badge" id="listCount">TOP 50</span>
-                    </div>
+                    <div class="card-title">🏆 TOP HOLDERS <span class="card-badge" id="listCount">TOP 25</span></div>
                     <div class="tabs">
                         <button class="tab active" data-count="25">25</button>
                         <button class="tab" data-count="50">50</button>
@@ -717,107 +284,68 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="sort-info">Click column headers to sort</div>
                     <div class="table-container">
                         <table class="rich-list" id="richList">
                             <thead>
                                 <tr>
-                                    <th>Rank</th>
-                                    <th>Account</th>
-                                    <th style="text-align: right;">Balance (XRP)</th>
-                                    <th style="text-align: right;">% Total</th>
+                                    <th class="sortable sort-asc" data-sort="rank" data-type="number">Rank</th>
+                                    <th class="sortable" data-sort="name" data-type="string">Account</th>
+                                    <th class="sortable" data-sort="balance" data-type="number" style="text-align: right;">Balance (XRP)</th>
+                                    <th class="sortable" data-sort="percentage" data-type="number" style="text-align: right;">% Total</th>
                                     <th style="text-align: center;">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="richListBody">
-                                <tr>
-                                    <td colspan="5">
-                                        <div class="loading">
-                                            <div class="loading-spinner"></div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <tr><td colspan="5"><div class="loading"><div class="loading-spinner"></div></div></td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Sidebar -->
             <div style="display: flex; flex-direction: column; gap: 30px;">
-                <!-- Distribution Chart -->
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">📈 CONCENTRATION</div>
-                    </div>
+                    <div class="card-header"><div class="card-title">📈 CONCENTRATION</div></div>
                     <div class="card-body">
                         <div class="distribution-item">
-                            <div class="distribution-label">
-                                <span>Top 10 Holdings</span>
-                                <span id="top10Pct">--%</span>
-                            </div>
-                            <div class="distribution-bar">
-                                <div class="distribution-fill blue" id="top10Bar" style="width: 0%"></div>
-                            </div>
+                            <div class="distribution-label"><span>Top 10 Holdings</span><span id="top10Pct">--%</span></div>
+                            <div class="distribution-bar"><div class="distribution-fill blue" id="top10Bar" style="width: 0%"></div></div>
                         </div>
                         <div class="distribution-item">
-                            <div class="distribution-label">
-                                <span>Top 100 Holdings</span>
-                                <span id="top100Pct">--%</span>
-                            </div>
-                            <div class="distribution-bar">
-                                <div class="distribution-fill green" id="top100Bar" style="width: 0%"></div>
-                            </div>
+                            <div class="distribution-label"><span>Top 100 Holdings</span><span id="top100Pct">--%</span></div>
+                            <div class="distribution-bar"><div class="distribution-fill green" id="top100Bar" style="width: 0%"></div></div>
                         </div>
                         <div class="distribution-item">
-                            <div class="distribution-label">
-                                <span>Whale Holdings (≥1M)</span>
-                                <span id="whalePct">--%</span>
-                            </div>
-                            <div class="distribution-bar">
-                                <div class="distribution-fill orange" id="whaleBar" style="width: 0%"></div>
-                            </div>
+                            <div class="distribution-label"><span>Whale Holdings (≥1M)</span><span id="whalePct">--%</span></div>
+                            <div class="distribution-bar"><div class="distribution-fill orange" id="whaleBar" style="width: 0%"></div></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Gini Coefficient -->
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">⚖️ WEALTH INEQUALITY</div>
-                    </div>
+                    <div class="card-header"><div class="card-title">⚖️ WEALTH INEQUALITY</div></div>
                     <div class="card-body">
                         <div class="gini-meter">
                             <div class="gini-value" id="giniValue">--</div>
                             <div class="gini-label">Gini Coefficient</div>
-                            <div class="gini-scale">
-                                <span>0 (Equal)</span>
-                                <span>1 (Unequal)</span>
-                            </div>
+                            <div class="gini-scale"><span>0 (Equal)</span><span>1 (Unequal)</span></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Balance Distribution Chart -->
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">🥧 DISTRIBUTION</div>
-                    </div>
+                    <div class="card-header"><div class="card-title">🥧 DISTRIBUTION</div></div>
                     <div class="card-body">
-                        <div class="chart-container small">
-                            <canvas id="distributionChart"></canvas>
-                        </div>
+                        <div class="chart-container small"><canvas id="distributionChart"></canvas></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Changes Section -->
         <div class="card">
             <div class="card-header">
-                <div class="card-title">
-                    🔄 RECENT CHANGES
-                    <span class="card-badge">24H</span>
-                </div>
+                <div class="card-title">🔄 RECENT CHANGES <span class="card-badge">24H</span></div>
                 <button class="refresh-btn" id="refreshBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
@@ -830,41 +358,54 @@
                     <table class="rich-list" id="changesTable">
                         <thead>
                             <tr>
-                                <th>Rank</th>
-                                <th>Account</th>
-                                <th style="text-align: right;">Current Balance</th>
-                                <th style="text-align: right;">Change</th>
-                                <th style="text-align: right;">Change %</th>
-                                <th>Status</th>
+                                <th class="sortable" data-sort="rank" data-type="number">Rank</th>
+                                <th class="sortable" data-sort="name" data-type="string">Account</th>
+                                <th class="sortable" data-sort="balance" data-type="number" style="text-align: right;">Current Balance</th>
+                                <th class="sortable sort-desc" data-sort="change" data-type="number" style="text-align: right;">Change</th>
+                                <th class="sortable" data-sort="changePct" data-type="number" style="text-align: right;">Change %</th>
+                                <th class="sortable" data-sort="status" data-type="string">Status</th>
                             </tr>
                         </thead>
                         <tbody id="changesBody">
-                            <tr>
-                                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">
-                                    No previous data available for comparison
-                                </td>
-                            </tr>
+                            <tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">No previous data available for comparison</td></tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-
-        <!-- Alerts Section -->
-        <div class="alerts-container" id="alertsContainer" style="display: none;">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        🚨 ALERTS
-                        <span class="card-badge" id="alertCount">0</span>
+                <!-- Change Summary -->
+                <div id="changeSummary" style="display: none; margin-top: 20px;">
+                    <div class="card-title" style="margin-bottom: 15px;">📊 CHANGE SUMMARY</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div style="background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.2); border-radius: 12px; padding: 15px;">
+                            <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 5px;">NEW ACCOUNTS</div>
+                            <div style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--neon-green);" id="summaryNewCount">0</div>
+                            <div style="font-size: 0.75rem; color: var(--neon-green);" id="summaryNewXRP">+0 XRP</div>
+                        </div>
+                        <div style="background: rgba(255, 0, 128, 0.1); border: 1px solid rgba(255, 0, 128, 0.2); border-radius: 12px; padding: 15px;">
+                            <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 5px;">REMOVED ACCOUNTS</div>
+                            <div style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--neon-pink);" id="summaryRemovedCount">0</div>
+                            <div style="font-size: 0.75rem; color: var(--neon-pink);" id="summaryRemovedXRP">-0 XRP</div>
+                        </div>
+                        <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 12px; padding: 15px;">
+                            <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 5px;">BALANCE CHANGED</div>
+                            <div style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--neon-blue);" id="summaryChangedCount">0</div>
+                            <div style="font-size: 0.75rem; color: var(--neon-blue);" id="summaryChangedXRP">+0 XRP</div>
+                        </div>
+                        <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 12px; padding: 15px;">
+                            <div style="font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 5px;">NET CHANGE</div>
+                            <div style="font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--neon-purple);" id="summaryNetXRP">0 XRP</div>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body" id="alertsBody">
-                </div>
             </div>
         </div>
 
-        <!-- Footer -->
+        <div class="alerts-container" id="alertsContainer" style="display: none;">
+            <div class="card">
+                <div class="card-header"><div class="card-title">🚨 ALERTS <span class="card-badge" id="alertCount">0</span></div></div>
+                <div class="card-body" id="alertsBody"></div>
+            </div>
+        </div>
+
         <footer class="footer">
             <p class="footer-text">XRP WHALE WATCH • DATA FROM XRPSCAN API</p>
             <p class="timestamp" id="lastUpdate">Last updated: --</p>
@@ -872,21 +413,21 @@
     </div>
 
     <script>
-        // Configuration
         const CONFIG = {
             API_URL: 'https://api.xrpscan.com/api/v1/balances',
             WHALE_THRESHOLD: 1000000,
             SIGNIFICANT_CHANGE: 1000,
             LARGE_CHANGE: 100000,
-            REFRESH_INTERVAL: 300000 // 5 minutes
+            REFRESH_INTERVAL: 300000
         };
 
-        // State
         let currentData = [];
         let previousData = [];
         let displayCount = 25;
+        let currentSort = { column: 'rank', direction: 'asc' };
+        let changesSort = { column: 'change', direction: 'desc' };
+        let changesData = [];
 
-        // Utility Functions
         function formatNumber(num) {
             if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
             if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
@@ -894,9 +435,7 @@
             return num.toLocaleString();
         }
 
-        function formatXRP(drops) {
-            return drops / 1000000;
-        }
+        function formatXRP(drops) { return drops / 1000000; }
 
         function truncateAddress(addr) {
             if (!addr) return 'Unknown';
@@ -904,41 +443,56 @@
         }
 
         function calculateGini(values) {
+            // Efficient O(n log n) Gini calculation
             const sorted = [...values].sort((a, b) => a - b);
             const n = sorted.length;
-            const cumsum = sorted.reduce((acc, val, i) => {
-                acc.push((acc[i - 1] || 0) + val);
-                return acc;
-            }, []);
+            const sum = sorted.reduce((a, b) => a + b, 0);
+            if (sum === 0) return 0;
             
-            let sum = 0;
+            let weightedSum = 0;
             for (let i = 0; i < n; i++) {
-                sum += (n - i) * sorted[i];
+                weightedSum += (i + 1) * sorted[i];
             }
-            return (2 * sum) / (n * cumsum[n - 1]) - 1;
+            // Gini = (2 * weightedSum) / (n * sum) - (n + 1) / n
+            return (2 * weightedSum) / (n * sum) - (n + 1) / n;
         }
 
-        // Fetch Data
+        function sortData(data, column, direction, type) {
+            return [...data].sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+                if (column === 'name') { valA = a.name || ''; valB = b.name || ''; }
+                if (type === 'number') { valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0; }
+                else { valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase(); }
+                if (direction === 'asc') return valA > valB ? 1 : valA < valB ? -1 : 0;
+                return valA < valB ? 1 : valA > valB ? -1 : 0;
+            });
+        }
+
+        function updateSortIndicators(tableId, column, direction) {
+            const table = document.getElementById(tableId);
+            table.querySelectorAll('th.sortable').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+                if (th.dataset.sort === column) th.classList.add(direction === 'asc' ? 'sort-asc' : 'sort-desc');
+            });
+        }
+
         async function fetchData() {
             try {
                 const response = await fetch(CONFIG.API_URL);
                 if (!response.ok) throw new Error('API request failed');
-                const data = await response.json();
-                return data;
+                return await response.json();
             } catch (error) {
                 console.error('Error fetching data:', error);
                 return null;
             }
         }
 
-        // Process Data
         function processData(rawData) {
-            return rawData.map((entry, index) => {
+            const sorted = rawData.map(entry => {
                 const balanceXRP = formatXRP(entry.balance || 0);
                 const nameInfo = entry.name || {};
-                
                 return {
-                    rank: index + 1,
                     account: entry.account || 'Unknown',
                     balance: balanceXRP,
                     name: nameInfo.name || 'Unknown',
@@ -946,93 +500,78 @@
                     isWhale: balanceXRP >= CONFIG.WHALE_THRESHOLD
                 };
             }).sort((a, b) => b.balance - a.balance);
+            
+            return sorted.map((entry, index) => ({ ...entry, rank: index + 1 }));
         }
 
-        // Calculate Statistics
         function calculateStats(data) {
             const totalXRP = data.reduce((sum, acc) => sum + acc.balance, 0);
             const whales = data.filter(acc => acc.isWhale);
             const whaleHoldings = whales.reduce((sum, acc) => sum + acc.balance, 0);
+            const sortedByBalance = [...data].sort((a, b) => b.balance - a.balance);
+            const top10 = sortedByBalance.slice(0, 10).reduce((sum, acc) => sum + acc.balance, 0);
+            const top100 = sortedByBalance.slice(0, 100).reduce((sum, acc) => sum + acc.balance, 0);
+            const gini = calculateGini(data.map(d => d.balance));
             
-            const top10 = data.slice(0, 10).reduce((sum, acc) => sum + acc.balance, 0);
-            const top100 = data.slice(0, 100).reduce((sum, acc) => sum + acc.balance, 0);
-            
-            const balances = data.map(d => d.balance);
-            const gini = calculateGini(balances);
+            // Calculate mean and median
+            const meanBalance = totalXRP / data.length;
+            const sortedBalances = data.map(d => d.balance).sort((a, b) => a - b);
+            const mid = Math.floor(sortedBalances.length / 2);
+            const medianBalance = sortedBalances.length % 2 !== 0 
+                ? sortedBalances[mid] 
+                : (sortedBalances[mid - 1] + sortedBalances[mid]) / 2;
 
             return {
-                totalXRP,
-                totalAccounts: data.length,
-                whaleCount: whales.length,
-                whaleHoldings,
-                whalePercentage: (whaleHoldings / totalXRP * 100),
-                top10Holdings: top10,
-                top10Percentage: (top10 / totalXRP * 100),
-                top100Holdings: top100,
-                top100Percentage: (top100 / totalXRP * 100),
-                giniCoefficient: gini
+                totalXRP, totalAccounts: data.length, whaleCount: whales.length,
+                whaleHoldings, whalePercentage: (whaleHoldings / totalXRP * 100),
+                top10Holdings: top10, top10Percentage: (top10 / totalXRP * 100),
+                top100Holdings: top100, top100Percentage: (top100 / totalXRP * 100),
+                giniCoefficient: gini, meanBalance, medianBalance
             };
         }
 
-        // Update UI
         function updateStats(stats) {
             document.getElementById('totalXRP').textContent = formatNumber(stats.totalXRP);
             document.getElementById('totalAccounts').textContent = stats.totalAccounts.toLocaleString();
             document.getElementById('whaleCount').textContent = stats.whaleCount.toLocaleString();
             document.getElementById('whaleHoldings').textContent = formatNumber(stats.whaleHoldings) + ' XRP';
-            
+            document.getElementById('meanBalance').textContent = formatNumber(stats.meanBalance) + ' XRP';
+            document.getElementById('medianBalance').textContent = formatNumber(stats.medianBalance) + ' XRP';
             document.getElementById('top10Pct').textContent = stats.top10Percentage.toFixed(2) + '%';
             document.getElementById('top100Pct').textContent = stats.top100Percentage.toFixed(2) + '%';
             document.getElementById('whalePct').textContent = stats.whalePercentage.toFixed(2) + '%';
-            
             document.getElementById('top10Bar').style.width = stats.top10Percentage + '%';
             document.getElementById('top100Bar').style.width = stats.top100Percentage + '%';
             document.getElementById('whaleBar').style.width = stats.whalePercentage + '%';
-            
             document.getElementById('giniValue').textContent = stats.giniCoefficient.toFixed(4);
         }
 
-        function updateRichList(data) {
+        function updateRichList(data, sortColumn = currentSort.column, sortDirection = currentSort.direction) {
             const tbody = document.getElementById('richListBody');
             const totalXRP = data.reduce((sum, acc) => sum + acc.balance, 0);
+            const dataWithPct = data.map(acc => ({ ...acc, percentage: (acc.balance / totalXRP * 100) }));
+            const header = document.querySelector(`#richList th[data-sort="${sortColumn}"]`);
+            const sortType = header ? header.dataset.type : 'number';
+            const sortedData = sortData(dataWithPct, sortColumn, sortDirection, sortType);
             
-            tbody.innerHTML = data.slice(0, displayCount).map((acc, i) => {
-                const percentage = (acc.balance / totalXRP * 100).toFixed(4);
-                const rankClass = i < 3 ? 'rank top-3' : 'rank';
-                
-                return `
-                    <tr>
-                        <td class="${rankClass}">#${acc.rank}</td>
-                        <td>
-                            <div class="account-info">
-                                <span class="account-address">${truncateAddress(acc.account)}</span>
-                                <span class="account-name">${acc.name}</span>
-                            </div>
-                        </td>
-                        <td class="balance">${formatNumber(acc.balance)}</td>
-                        <td class="percentage">${percentage}%</td>
-                        <td style="text-align: center;">
-                            ${acc.isWhale ? '<span class="whale-badge">🐋</span>' : ''}
-                        </td>
-                    </tr>
-                `;
+            tbody.innerHTML = sortedData.slice(0, displayCount).map(acc => {
+                const rankClass = acc.rank <= 3 ? 'rank top-3' : 'rank';
+                return `<tr>
+                    <td class="${rankClass}">#${acc.rank}</td>
+                    <td><div class="account-info"><span class="account-address">${truncateAddress(acc.account)}</span><span class="account-name">${acc.name}</span></div></td>
+                    <td class="balance">${formatNumber(acc.balance)}</td>
+                    <td class="percentage">${acc.percentage.toFixed(4)}%</td>
+                    <td style="text-align: center;">${acc.isWhale ? '<span class="whale-badge">🐋</span>' : ''}</td>
+                </tr>`;
             }).join('');
             
             document.getElementById('listCount').textContent = `TOP ${displayCount}`;
+            updateSortIndicators('richList', sortColumn, sortDirection);
         }
 
         function updateDistributionChart(data) {
             const ctx = document.getElementById('distributionChart').getContext('2d');
-            
-            // Calculate distribution buckets
-            const buckets = {
-                '≥10M': 0,
-                '1M-10M': 0,
-                '100K-1M': 0,
-                '10K-100K': 0,
-                '<10K': 0
-            };
-            
+            const buckets = { '≥10M': 0, '1M-10M': 0, '100K-1M': 0, '10K-100K': 0, '<10K': 0 };
             data.forEach(acc => {
                 if (acc.balance >= 10000000) buckets['≥10M'] += acc.balance;
                 else if (acc.balance >= 1000000) buckets['1M-10M'] += acc.balance;
@@ -1040,222 +579,136 @@
                 else if (acc.balance >= 10000) buckets['10K-100K'] += acc.balance;
                 else buckets['<10K'] += acc.balance;
             });
-
-            // Destroy existing chart if it exists
-            if (window.distributionChartInstance) {
-                window.distributionChartInstance.destroy();
-            }
-
+            if (window.distributionChartInstance) window.distributionChartInstance.destroy();
             window.distributionChartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(buckets),
-                    datasets: [{
-                        data: Object.values(buckets),
-                        backgroundColor: [
-                            '#00d4ff',
-                            '#a855f7',
-                            '#00ff88',
-                            '#ff6b35',
-                            '#ff0080'
-                        ],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
+                    datasets: [{ data: Object.values(buckets), backgroundColor: ['#00d4ff', '#a855f7', '#00ff88', '#ff6b35', '#ff0080'], borderWidth: 0, hoverOffset: 10 }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '60%',
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#8892a6',
-                                font: {
-                                    family: 'JetBrains Mono',
-                                    size: 10
-                                },
-                                padding: 15,
-                                usePointStyle: true,
-                                pointStyle: 'circle'
-                            }
-                        }
-                    }
+                    responsive: true, maintainAspectRatio: false, cutout: '60%',
+                    plugins: { legend: { position: 'bottom', labels: { color: '#8892a6', font: { family: 'JetBrains Mono', size: 10 }, padding: 15, usePointStyle: true } } }
                 }
             });
         }
 
         function compareData(current, previous) {
             if (!previous || previous.length === 0) return [];
-            
             const changes = [];
             const prevMap = new Map(previous.map(acc => [acc.account, acc]));
             const currMap = new Map(current.map(acc => [acc.account, acc]));
             
-            // Find changes
             current.forEach(acc => {
                 const prev = prevMap.get(acc.account);
-                if (!prev) {
-                    changes.push({
-                        ...acc,
-                        change: acc.balance,
-                        changePct: 100,
-                        status: 'New Account'
-                    });
-                } else if (Math.abs(acc.balance - prev.balance) >= CONFIG.SIGNIFICANT_CHANGE) {
+                if (!prev) changes.push({ ...acc, change: acc.balance, changePct: 100, status: 'New Account' });
+                else if (Math.abs(acc.balance - prev.balance) >= CONFIG.SIGNIFICANT_CHANGE) {
                     const change = acc.balance - prev.balance;
-                    changes.push({
-                        ...acc,
-                        previousBalance: prev.balance,
-                        change,
-                        changePct: (change / prev.balance * 100),
-                        status: 'Balance Changed'
-                    });
+                    changes.push({ ...acc, previousBalance: prev.balance, change, changePct: (change / prev.balance * 100), status: 'Balance Changed' });
                 }
             });
-            
-            // Find removed accounts
             previous.forEach(acc => {
-                if (!currMap.has(acc.account)) {
-                    changes.push({
-                        ...acc,
-                        balance: 0,
-                        change: -acc.balance,
-                        changePct: -100,
-                        status: 'Removed'
-                    });
-                }
+                if (!currMap.has(acc.account)) changes.push({ ...acc, balance: 0, change: -acc.balance, changePct: -100, status: 'Removed' });
             });
-            
-            return changes.sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+            return changes;
         }
 
-        function updateChangesTable(changes) {
+        function updateChangesTable(changes, sortColumn = changesSort.column, sortDirection = changesSort.direction) {
             const tbody = document.getElementById('changesBody');
-            
+            changesData = changes;
             if (changes.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">
-                            No significant changes detected
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">No significant changes detected</td></tr>';
                 return;
             }
+            const header = document.querySelector(`#changesTable th[data-sort="${sortColumn}"]`);
+            const sortType = header ? header.dataset.type : 'number';
+            const sortedChanges = sortData(changes, sortColumn, sortDirection, sortType);
             
-            tbody.innerHTML = changes.slice(0, 50).map(change => {
+            tbody.innerHTML = sortedChanges.slice(0, 50).map(change => {
                 const changeClass = change.change > 0 ? 'change-positive' : 'change-negative';
                 const arrow = change.change > 0 ? '↑' : '↓';
-                
-                return `
-                    <tr>
-                        <td class="rank">${change.rank || '-'}</td>
-                        <td>
-                            <div class="account-info">
-                                <span class="account-address">${truncateAddress(change.account)}</span>
-                                <span class="account-name">${change.name}</span>
-                            </div>
-                        </td>
-                        <td class="balance">${formatNumber(change.balance)}</td>
-                        <td class="${changeClass}" style="text-align: right;">
-                            ${arrow} ${formatNumber(Math.abs(change.change))}
-                        </td>
-                        <td class="${changeClass}" style="text-align: right;">
-                            ${change.changePct > 0 ? '+' : ''}${change.changePct.toFixed(2)}%
-                        </td>
-                        <td style="font-size: 0.75rem; color: var(--text-secondary);">
-                            ${change.status}
-                        </td>
-                    </tr>
-                `;
+                return `<tr>
+                    <td class="rank">${change.rank || '-'}</td>
+                    <td><div class="account-info"><span class="account-address">${truncateAddress(change.account)}</span><span class="account-name">${change.name}</span></div></td>
+                    <td class="balance">${formatNumber(change.balance)}</td>
+                    <td class="${changeClass}" style="text-align: right;">${arrow} ${formatNumber(Math.abs(change.change))}</td>
+                    <td class="${changeClass}" style="text-align: right;">${change.changePct > 0 ? '+' : ''}${change.changePct.toFixed(2)}%</td>
+                    <td style="font-size: 0.75rem; color: var(--text-secondary);">${change.status}</td>
+                </tr>`;
             }).join('');
+            updateSortIndicators('changesTable', sortColumn, sortDirection);
+        }
+
+        function updateChangeSummary(changes) {
+            const summaryDiv = document.getElementById('changeSummary');
+            if (changes.length === 0) {
+                summaryDiv.style.display = 'none';
+                return;
+            }
+            summaryDiv.style.display = 'block';
+            
+            const newAccounts = changes.filter(c => c.status === 'New Account');
+            const removedAccounts = changes.filter(c => c.status === 'Removed');
+            const changedAccounts = changes.filter(c => c.status === 'Balance Changed');
+            
+            const newXRP = newAccounts.reduce((sum, c) => sum + c.change, 0);
+            const removedXRP = removedAccounts.reduce((sum, c) => sum + Math.abs(c.change), 0);
+            const changedXRP = changedAccounts.reduce((sum, c) => sum + c.change, 0);
+            const netXRP = newXRP - removedXRP + changedXRP;
+            
+            document.getElementById('summaryNewCount').textContent = newAccounts.length;
+            document.getElementById('summaryNewXRP').textContent = '+' + formatNumber(newXRP) + ' XRP';
+            document.getElementById('summaryRemovedCount').textContent = removedAccounts.length;
+            document.getElementById('summaryRemovedXRP').textContent = '-' + formatNumber(removedXRP) + ' XRP';
+            document.getElementById('summaryChangedCount').textContent = changedAccounts.length;
+            document.getElementById('summaryChangedXRP').textContent = (changedXRP >= 0 ? '+' : '') + formatNumber(changedXRP) + ' XRP';
+            document.getElementById('summaryNetXRP').textContent = (netXRP >= 0 ? '+' : '') + formatNumber(netXRP) + ' XRP';
+            document.getElementById('summaryNetXRP').style.color = netXRP >= 0 ? 'var(--neon-green)' : 'var(--neon-pink)';
         }
 
         function detectAlerts(changes) {
             const alerts = [];
-            
             changes.forEach(change => {
                 if (Math.abs(change.change) >= CONFIG.LARGE_CHANGE) {
-                    alerts.push({
-                        type: 'LARGE_MOVEMENT',
-                        icon: '⚠️',
-                        title: `Large ${change.change > 0 ? 'Inflow' : 'Outflow'} Detected`,
-                        description: `${change.name} (${truncateAddress(change.account)}) moved ${formatNumber(Math.abs(change.change))} XRP`,
-                        severity: 'high'
-                    });
+                    alerts.push({ type: 'LARGE_MOVEMENT', icon: '⚠️', title: `Large ${change.change > 0 ? 'Inflow' : 'Outflow'} Detected`, description: `${change.name} (${truncateAddress(change.account)}) moved ${formatNumber(Math.abs(change.change))} XRP` });
                 }
-                
                 if (change.status === 'New Account' && change.balance >= CONFIG.WHALE_THRESHOLD) {
-                    alerts.push({
-                        type: 'NEW_WHALE',
-                        icon: '🐋',
-                        title: 'New Whale Detected',
-                        description: `${truncateAddress(change.account)} entered with ${formatNumber(change.balance)} XRP`,
-                        severity: 'medium'
-                    });
+                    alerts.push({ type: 'NEW_WHALE', icon: '🐋', title: 'New Whale Detected', description: `${truncateAddress(change.account)} entered with ${formatNumber(change.balance)} XRP` });
                 }
             });
-            
             return alerts;
         }
 
         function updateAlerts(alerts) {
             const container = document.getElementById('alertsContainer');
             const body = document.getElementById('alertsBody');
-            const countBadge = document.getElementById('alertCount');
-            
-            if (alerts.length === 0) {
-                container.style.display = 'none';
-                return;
-            }
-            
+            if (alerts.length === 0) { container.style.display = 'none'; return; }
             container.style.display = 'block';
-            countBadge.textContent = alerts.length;
-            
-            body.innerHTML = alerts.map(alert => `
-                <div class="alert-item ${alert.type === 'NEW_WHALE' ? 'whale' : ''}">
-                    <div class="alert-icon">${alert.icon}</div>
-                    <div class="alert-content">
-                        <div class="alert-title">${alert.title}</div>
-                        <div class="alert-description">${alert.description}</div>
-                    </div>
-                    <div class="alert-time">Just now</div>
-                </div>
-            `).join('');
+            document.getElementById('alertCount').textContent = alerts.length;
+            body.innerHTML = alerts.map(alert => `<div class="alert-item ${alert.type === 'NEW_WHALE' ? 'whale' : ''}"><div class="alert-icon">${alert.icon}</div><div class="alert-content"><div class="alert-title">${alert.title}</div><div class="alert-description">${alert.description}</div></div><div class="alert-time">Just now</div></div>`).join('');
         }
 
-        // Main refresh function
         async function refreshData() {
             const refreshBtn = document.getElementById('refreshBtn');
             refreshBtn.classList.add('loading');
-            
             const rawData = await fetchData();
-            
             if (rawData) {
                 previousData = [...currentData];
                 currentData = processData(rawData);
-                
                 const stats = calculateStats(currentData);
                 updateStats(stats);
                 updateRichList(currentData);
                 updateDistributionChart(currentData);
-                
                 const changes = compareData(currentData, previousData);
+                changesData = changes;
                 updateChangesTable(changes);
-                
-                const alerts = detectAlerts(changes);
-                updateAlerts(alerts);
-                
-                document.getElementById('lastUpdate').textContent = 
-                    `Last updated: ${new Date().toLocaleString()}`;
+                updateChangeSummary(changes);
+                updateAlerts(detectAlerts(changes));
+                document.getElementById('lastUpdate').textContent = `Last updated: ${new Date().toLocaleString()}`;
             }
-            
             refreshBtn.classList.remove('loading');
         }
 
-        // Event Listeners
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1267,10 +720,25 @@
 
         document.getElementById('refreshBtn').addEventListener('click', refreshData);
 
-        // Initialize
+        document.querySelectorAll('#richList th.sortable').forEach(th => {
+            th.addEventListener('click', () => {
+                const column = th.dataset.sort, type = th.dataset.type;
+                if (currentSort.column === column) currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                else { currentSort.column = column; currentSort.direction = type === 'number' ? 'desc' : 'asc'; }
+                updateRichList(currentData, currentSort.column, currentSort.direction);
+            });
+        });
+
+        document.querySelectorAll('#changesTable th.sortable').forEach(th => {
+            th.addEventListener('click', () => {
+                const column = th.dataset.sort, type = th.dataset.type;
+                if (changesSort.column === column) changesSort.direction = changesSort.direction === 'asc' ? 'desc' : 'asc';
+                else { changesSort.column = column; changesSort.direction = type === 'number' ? 'desc' : 'asc'; }
+                updateChangesTable(changesData, changesSort.column, changesSort.direction);
+            });
+        });
+
         refreshData();
-        
-        // Auto-refresh every 5 minutes
         setInterval(refreshData, CONFIG.REFRESH_INTERVAL);
     </script>
 </body>
