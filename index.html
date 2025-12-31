@@ -290,6 +290,31 @@
             color: var(--neon-blue);
             text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
+        
+        /* Changes Info Banner */
+        .changes-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .changes-info.success {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+        .changes-info.warning {
+            background: rgba(255, 107, 53, 0.1);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+        .info-icon {
+            font-size: 1rem;
+        }
         .loading { display: flex; align-items: center; justify-content: center; height: 200px; }
         .loading-spinner { width: 50px; height: 50px; border: 3px solid var(--bg-tertiary); border-top-color: var(--neon-blue); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -720,7 +745,7 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title">🔄 RECENT CHANGES <span class="card-badge">24H</span></div>
+                <div class="card-title">🔄 RECENT CHANGES <span class="card-badge" id="changesPeriod">--</span></div>
                 <button class="refresh-btn" id="refreshBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
@@ -729,6 +754,11 @@
                 </button>
             </div>
             <div class="card-body">
+                <!-- Data source info -->
+                <div class="changes-info" id="changesInfo">
+                    <span class="info-icon">ℹ️</span>
+                    <span id="changesInfoText">Comparing with previous session data...</span>
+                </div>
                 <div class="table-container" style="max-height: 400px;">
                     <table class="rich-list" id="changesTable">
                         <thead>
@@ -742,7 +772,7 @@
                             </tr>
                         </thead>
                         <tbody id="changesBody">
-                            <tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">No previous data available for comparison</td></tr>
+                            <tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">Loading data... First visit requires a second refresh to compare.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1240,6 +1270,10 @@
             const refreshBtn = document.getElementById('refreshBtn');
             refreshBtn.classList.add('loading');
             
+            const changesInfo = document.getElementById('changesInfo');
+            const changesInfoText = document.getElementById('changesInfoText');
+            const changesPeriod = document.getElementById('changesPeriod');
+            
             const result = await fetchData();
             
             if (result) {
@@ -1261,6 +1295,17 @@
                     const alerts = convertBackendAlerts(apiData.alerts || []);
                     updateAlerts(alerts);
                     
+                    // Update info panel for backend
+                    if (apiData.hasPreviousData) {
+                        changesPeriod.textContent = '24H';
+                        changesInfo.className = 'changes-info success';
+                        changesInfoText.textContent = `✓ Comparing with yesterday's data (${changesData.length} changes detected)`;
+                    } else {
+                        changesPeriod.textContent = 'NEW';
+                        changesInfo.className = 'changes-info warning';
+                        changesInfoText.textContent = '⚠ No previous day data available. Changes will appear tomorrow.';
+                    }
+                    
                     // Show data source indicator
                     const sourceIndicator = apiData.hasPreviousData ? '(with 24h comparison)' : '(no previous data)';
                     document.getElementById('lastUpdate').textContent = `Last updated: ${new Date().toLocaleString()} ${sourceIndicator}`;
@@ -1271,6 +1316,8 @@
                     
                     // Load previous data from storage
                     const storedData = loadFromStorage();
+                    const storedTimestamp = getStorageTimestamp();
+                    
                     if (storedData && currentData.length === 0) {
                         previousData = storedData;
                     } else {
@@ -1294,12 +1341,55 @@
                     updateChangeSummary(changes);
                     updateAlerts(detectAlerts(changes));
                     
+                    // Update info panel based on data state
+                    if (previousData.length === 0) {
+                        changesPeriod.textContent = 'NEW';
+                        changesInfo.className = 'changes-info warning';
+                        changesInfoText.textContent = '⚠ First visit! Data saved. Refresh again later to see changes.';
+                    } else if (changes.length === 0) {
+                        changesPeriod.textContent = 'LIVE';
+                        changesInfo.className = 'changes-info';
+                        changesInfoText.textContent = 'ℹ No significant changes since last refresh. Try again later or run the backend API for 24h comparison.';
+                    } else {
+                        const timeDiff = storedTimestamp ? getTimeDiffString(storedTimestamp) : 'previous session';
+                        changesPeriod.textContent = timeDiff;
+                        changesInfo.className = 'changes-info success';
+                        changesInfoText.textContent = `✓ Comparing with ${timeDiff} ago (${changes.length} changes detected)`;
+                    }
+                    
                     const sourceIndicator = previousData.length > 0 ? '(using cached data)' : '(no previous data yet)';
                     document.getElementById('lastUpdate').textContent = `Last updated: ${new Date().toLocaleString()} ${sourceIndicator}`;
                 }
             }
             
             refreshBtn.classList.remove('loading');
+        }
+        
+        // Helper to get time difference string
+        function getTimeDiffString(timestamp) {
+            const now = new Date();
+            const then = new Date(timestamp);
+            const diffMs = now - then;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffDays > 0) return `${diffDays}d`;
+            if (diffHours > 0) return `${diffHours}h`;
+            if (diffMins > 0) return `${diffMins}m`;
+            return 'just now';
+        }
+        
+        // Helper to get storage timestamp
+        function getStorageTimestamp() {
+            try {
+                const stored = localStorage.getItem(CONFIG.STORAGE_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    return parsed.timestamp;
+                }
+            } catch (e) {}
+            return null;
         }
 
         document.querySelectorAll('.tab').forEach(tab => {
