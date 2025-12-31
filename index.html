@@ -229,13 +229,206 @@
         .refresh-btn.loading svg { animation: spin 1s linear infinite; }
         .timestamp { font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; }
         .sort-info { font-size: 0.65rem; color: var(--text-muted); margin-bottom: 10px; text-align: center; font-style: italic; }
+        
+        /* XRP Price Display */
+        .price-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            padding: 15px 30px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+        .price-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+        }
+        .price-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        .price-change {
+            font-size: 0.9rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .price-change.up {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--neon-green);
+        }
+        .price-change.down {
+            background: rgba(255, 0, 128, 0.15);
+            color: var(--neon-pink);
+        }
+        
+        /* Popup Overlay Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .popup-box {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            border-radius: 24px;
+            padding: 40px 50px;
+            text-align: center;
+            max-width: 420px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(0, 212, 255, 0.3), 0 25px 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.8);
+            transition: transform 0.4s ease;
+        }
+        .popup-overlay.show .popup-box {
+            transform: scale(1);
+        }
+        .popup-close {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: bounce 2s ease-in-out infinite;
+            transition: transform 0.2s ease;
+        }
+        .popup-close:hover {
+            transform: scale(1.1);
+            animation: none;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .popup-headline {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glowText 2s ease-in-out infinite alternate;
+        }
+        @keyframes glowText {
+            from { filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 25px rgba(168, 85, 247, 0.7)); }
+        }
+        .popup-subtext {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .popup-subtext span {
+            color: var(--neon-blue);
+            font-weight: 600;
+        }
+        .popup-follow-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            letter-spacing: 2px;
+            animation: glowButton 1.5s ease-in-out infinite alternate;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+        .popup-follow-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.6), 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes glowButton {
+            from { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4), 0 0 40px rgba(0, 212, 255, 0.2); }
+            to { box-shadow: 0 0 30px rgba(0, 212, 255, 0.6), 0 0 60px rgba(0, 212, 255, 0.3); }
+        }
+        .popup-dismiss {
+            display: block;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .popup-dismiss:hover {
+            color: var(--text-secondary);
+        }
+        .popup-emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
+    <!-- Follow Popup -->
+    <div class="popup-overlay" id="followPopup">
+        <div class="popup-box">
+            <button class="popup-close" id="popupCloseX">✕</button>
+            <div class="popup-emoji">🚀</div>
+            <h2 class="popup-headline">Join the XRP Army!</h2>
+            <p class="popup-subtext">Stay updated with the latest <span>whale movements</span> and XRP insights. Follow for real-time alerts!</p>
+            <a href="https://twitter.com/chachakobe4er" target="_blank" class="popup-follow-btn" id="followBtn">FOLLOW NOW</a>
+            <button class="popup-dismiss" id="popupDismiss">Maybe later</button>
+        </div>
+    </div>
+
     <div class="container">
         <header class="header">
             <h1 class="logo">XRP WHALE WATCH</h1>
             <p class="tagline">Real-time Rich List Analytics</p>
+            
+            <!-- XRP Price Display -->
+            <div class="price-display">
+                <span class="price-label">XRP/USD</span>
+                <span class="price-value" id="xrpPrice">$--</span>
+                <span class="price-change up" id="xrpChange">--%</span>
+            </div>
+            
             <div class="live-indicator"><span class="live-dot"></span><span>LIVE DATA</span></div>
         </header>
 
@@ -862,6 +1055,234 @@
             });
         });
 
+        // ============================================
+        // XRP Price Fetching
+        // ============================================
+        async function fetchXRPPrice() {
+            try {
+                // Using CoinGecko API (free, no key required)
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd&include_24hr_change=true');
+                if (!response.ok) throw new Error('Price API failed');
+                const data = await response.json();
+                
+                const price = data.ripple.usd;
+                const change24h = data.ripple.usd_24h_change;
+                
+                updatePriceDisplay(price, change24h);
+            } catch (error) {
+                console.error('Error fetching XRP price:', error);
+                // Try alternative API
+                try {
+                    const altResponse = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=XRPUSDT');
+                    if (altResponse.ok) {
+                        const altData = await altResponse.json();
+                        const price = parseFloat(altData.lastPrice);
+                        const change24h = parseFloat(altData.priceChangePercent);
+                        updatePriceDisplay(price, change24h);
+                    }
+                } catch (e) {
+                    console.error('Backup price API also failed:', e);
+                }
+            }
+        }
+
+        function updatePriceDisplay(price, change24h) {
+            const priceEl = document.getElementById('xrpPrice');
+            const changeEl = document.getElementById('xrpChange');
+            
+            priceEl.textContent = '$' + price.toFixed(4);
+            
+            const isPositive = change24h >= 0;
+            changeEl.textContent = (isPositive ? '+' : '') + change24h.toFixed(2) + '%';
+            changeEl.className = 'price-change ' + (isPositive ? 'up' : 'down');
+        }
+
+        // Fetch price immediately and then every 30 seconds
+        fetchXRPPrice();
+        setInterval(fetchXRPPrice, 30000);
+
+        // ============================================
+        // Follow Popup with 5-second delay
+        // ============================================
+        const POPUP_DISMISSED_KEY = 'xrp_whale_watch_popup_dismissed';
+
+        function showPopup() {
+            // Check if already dismissed this session
+            if (sessionStorage.getItem(POPUP_DISMISSED_KEY)) {
+                return;
+            }
+            
+            const popup = document.getElementById('followPopup');
+            popup.classList.add('show');
+            
+            // Try to inject into parent window if in iframe
+            tryInjectIntoParent();
+        }
+
+        function hidePopup() {
+            const popup = document.getElementById('followPopup');
+            popup.classList.remove('show');
+            // Remember dismissal for this session
+            sessionStorage.setItem(POPUP_DISMISSED_KEY, 'true');
+        }
+
+        function tryInjectIntoParent() {
+            try {
+                // Check if we're in an iframe
+                if (window.parent && window.parent !== window) {
+                    const parentDoc = window.parent.document;
+                    
+                    // Create overlay in parent
+                    const overlay = parentDoc.createElement('div');
+                    overlay.id = 'xrp-whale-popup-overlay';
+                    overlay.innerHTML = `
+                        <style>
+                            #xrp-whale-popup-overlay {
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                background: rgba(0, 0, 0, 0.85);
+                                backdrop-filter: blur(8px);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                z-index: 999999;
+                                font-family: 'Segoe UI', system-ui, sans-serif;
+                            }
+                            .xrp-popup-box {
+                                background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+                                border: 2px solid rgba(0, 212, 255, 0.4);
+                                border-radius: 24px;
+                                padding: 40px 50px;
+                                text-align: center;
+                                max-width: 420px;
+                                position: relative;
+                                box-shadow: 0 0 60px rgba(0, 212, 255, 0.3), 0 25px 50px rgba(0, 0, 0, 0.5);
+                                animation: popIn 0.4s ease;
+                            }
+                            @keyframes popIn {
+                                from { transform: scale(0.8); opacity: 0; }
+                                to { transform: scale(1); opacity: 1; }
+                            }
+                            .xrp-popup-close {
+                                position: absolute;
+                                top: -15px;
+                                right: -15px;
+                                width: 40px;
+                                height: 40px;
+                                background: #fff;
+                                border: none;
+                                border-radius: 50%;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 1.5rem;
+                                font-weight: bold;
+                                color: #000;
+                                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                                animation: bounce 2s ease-in-out infinite;
+                            }
+                            @keyframes bounce {
+                                0%, 100% { transform: translateY(0); }
+                                50% { transform: translateY(-8px); }
+                            }
+                            .xrp-popup-close:hover { transform: scale(1.1); animation: none; }
+                            .xrp-popup-emoji { font-size: 3rem; margin-bottom: 15px; }
+                            .xrp-popup-headline {
+                                font-size: 2rem;
+                                font-weight: 800;
+                                margin-bottom: 15px;
+                                background: linear-gradient(135deg, #00d4ff 0%, #a855f7 50%, #00ff88 100%);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                                background-clip: text;
+                                animation: glowText 2s ease-in-out infinite alternate;
+                            }
+                            @keyframes glowText {
+                                from { filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5)); }
+                                to { filter: drop-shadow(0 0 25px rgba(168, 85, 247, 0.7)); }
+                            }
+                            .xrp-popup-subtext {
+                                font-size: 1rem;
+                                color: #8892a6;
+                                margin-bottom: 30px;
+                                line-height: 1.6;
+                            }
+                            .xrp-popup-subtext span { color: #00d4ff; font-weight: 600; }
+                            .xrp-popup-follow-btn {
+                                display: inline-block;
+                                padding: 15px 40px;
+                                font-size: 1.1rem;
+                                font-weight: 700;
+                                color: #fff;
+                                background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+                                border: none;
+                                border-radius: 50px;
+                                cursor: pointer;
+                                text-decoration: none;
+                                letter-spacing: 2px;
+                                animation: glowButton 1.5s ease-in-out infinite alternate;
+                                transition: all 0.3s ease;
+                            }
+                            .xrp-popup-follow-btn:hover {
+                                transform: translateY(-3px) scale(1.05);
+                                box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+                            }
+                            @keyframes glowButton {
+                                from { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+                                to { box-shadow: 0 0 30px rgba(0, 212, 255, 0.6); }
+                            }
+                            .xrp-popup-dismiss {
+                                display: block;
+                                margin-top: 20px;
+                                font-size: 0.85rem;
+                                color: #4a5568;
+                                background: none;
+                                border: none;
+                                cursor: pointer;
+                            }
+                            .xrp-popup-dismiss:hover { color: #8892a6; }
+                        </style>
+                        <div class="xrp-popup-box">
+                            <button class="xrp-popup-close" onclick="this.closest('#xrp-whale-popup-overlay').remove()">✕</button>
+                            <div class="xrp-popup-emoji">🚀</div>
+                            <h2 class="xrp-popup-headline">Join the XRP Army!</h2>
+                            <p class="xrp-popup-subtext">Stay updated with the latest <span>whale movements</span> and XRP insights!</p>
+                            <a href="https://twitter.com/chachakobe4er" target="_blank" class="xrp-popup-follow-btn">FOLLOW NOW</a>
+                            <button class="xrp-popup-dismiss" onclick="this.closest('#xrp-whale-popup-overlay').remove()">Maybe later</button>
+                        </div>
+                    `;
+                    
+                    parentDoc.body.appendChild(overlay);
+                    
+                    // Hide the internal popup since we're using parent
+                    document.getElementById('followPopup').classList.remove('show');
+                }
+            } catch (e) {
+                // Can't access parent (cross-origin), use internal popup
+                console.log('Using internal popup (cross-origin restriction)');
+            }
+        }
+
+        // Popup event listeners
+        document.getElementById('popupCloseX').addEventListener('click', hidePopup);
+        document.getElementById('popupDismiss').addEventListener('click', hidePopup);
+        document.getElementById('followBtn').addEventListener('click', () => {
+            // Track click and hide popup
+            hidePopup();
+        });
+
+        // Show popup after 5 seconds
+        setTimeout(() => {
+            if (!sessionStorage.getItem(POPUP_DISMISSED_KEY)) {
+                showPopup();
+            }
+        }, 5000);
+
+        // Initialize dashboard
         refreshData();
         setInterval(refreshData, CONFIG.REFRESH_INTERVAL);
     </script>
