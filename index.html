@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XRP Rich List Tracker | Whale Watch</title>
+    
+    <!-- Google Analytics GA4 -->
+    <!-- Replace G-XXXXXXXXXX with your actual Measurement ID from Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+        
+        // Track custom events
+        function trackEvent(eventName, eventParams) {
+            gtag('event', eventName, eventParams);
+        }
+    </script>
+    <!-- End Google Analytics -->
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -104,6 +121,61 @@
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(1.2); }
         }
+        
+        /* Refresh Timer Styles */
+        .refresh-timer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            padding: 15px 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+        .refresh-timer, .last-refresh, .refresh-count {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .timer-icon {
+            font-size: 1.3rem;
+        }
+        .timer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .timer-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .timer-countdown {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+        .timer-countdown.warning {
+            color: var(--neon-orange);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+        .timer-countdown.refreshing {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            animation: pulse 0.5s infinite;
+        }
+        .last-refresh-time, .refresh-count-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--neon-purple);
+        }
+        
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
         .stat-card {
             background: var(--bg-card);
@@ -637,6 +709,25 @@
             </nav>
             
             <div class="live-indicator"><span class="live-dot"></span><span>LIVE DATA</span></div>
+            
+            <!-- Refresh Timer Display -->
+            <div class="refresh-timer-container">
+                <div class="refresh-timer">
+                    <span class="timer-icon">⏱️</span>
+                    <div class="timer-info">
+                        <span class="timer-label">Next refresh in:</span>
+                        <span class="timer-countdown" id="refreshCountdown">5:00</span>
+                    </div>
+                </div>
+                <div class="last-refresh">
+                    <span class="timer-label">Last refresh:</span>
+                    <span class="last-refresh-time" id="lastRefreshTime">--</span>
+                </div>
+                <div class="refresh-count">
+                    <span class="timer-label">Refreshes this session:</span>
+                    <span class="refresh-count-value" id="refreshCount">0</span>
+                </div>
+            </div>
         </header>
 
         <div class="stats-grid">
@@ -1433,10 +1524,20 @@
                 tab.classList.add('active');
                 displayCount = parseInt(tab.dataset.count);
                 updateRichList(currentData);
+                // Track tab change
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'tab_change', { 'display_count': displayCount });
+                }
             });
         });
 
-        document.getElementById('refreshBtn').addEventListener('click', refreshData);
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            refreshData();
+            // Track refresh click
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'refresh_data', { 'method': 'manual' });
+            }
+        });
 
         document.querySelectorAll('#richList th.sortable').forEach(th => {
             th.addEventListener('click', () => {
@@ -1669,23 +1770,142 @@
         }
 
         // Popup event listeners
-        document.getElementById('popupCloseX').addEventListener('click', hidePopup);
-        document.getElementById('popupDismiss').addEventListener('click', hidePopup);
+        document.getElementById('popupCloseX').addEventListener('click', () => {
+            hidePopup();
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'popup_closed', { 'method': 'x_button' });
+            }
+        });
+        document.getElementById('popupDismiss').addEventListener('click', () => {
+            hidePopup();
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'popup_closed', { 'method': 'maybe_later' });
+            }
+        });
         document.getElementById('followBtn').addEventListener('click', () => {
             // Track click and hide popup
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'follow_click', { 'source': 'popup', 'destination': 'twitter' });
+            }
             hidePopup();
+        });
+
+        // Track external link clicks
+        document.querySelectorAll('a[target="_blank"]').forEach(link => {
+            link.addEventListener('click', () => {
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'outbound_click', { 
+                        'link_url': link.href,
+                        'link_text': link.textContent.trim().substring(0, 50)
+                    });
+                }
+            });
         });
 
         // Show popup after 5 seconds
         setTimeout(() => {
             if (!sessionStorage.getItem(POPUP_DISMISSED_KEY)) {
                 showPopup();
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'popup_shown');
+                }
             }
         }, 5000);
 
+        // ============================================
+        // Refresh Timer & Counter
+        // ============================================
+        let refreshCountdown = CONFIG.REFRESH_INTERVAL / 1000; // in seconds
+        let refreshCount = 0;
+        let lastRefreshTime = null;
+        let countdownInterval = null;
+
+        function updateCountdownDisplay() {
+            const countdownEl = document.getElementById('refreshCountdown');
+            const minutes = Math.floor(refreshCountdown / 60);
+            const seconds = refreshCountdown % 60;
+            countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Change color when getting close
+            if (refreshCountdown <= 30) {
+                countdownEl.classList.add('warning');
+            } else {
+                countdownEl.classList.remove('warning');
+            }
+            
+            if (refreshCountdown <= 0) {
+                countdownEl.classList.add('refreshing');
+                countdownEl.textContent = 'Refreshing...';
+            } else {
+                countdownEl.classList.remove('refreshing');
+            }
+        }
+
+        function updateLastRefreshTime() {
+            const lastRefreshEl = document.getElementById('lastRefreshTime');
+            if (lastRefreshTime) {
+                lastRefreshEl.textContent = lastRefreshTime.toLocaleTimeString();
+            }
+        }
+
+        function updateRefreshCount() {
+            document.getElementById('refreshCount').textContent = refreshCount;
+        }
+
+        function startCountdown() {
+            refreshCountdown = CONFIG.REFRESH_INTERVAL / 1000;
+            updateCountdownDisplay();
+            
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            countdownInterval = setInterval(() => {
+                refreshCountdown--;
+                updateCountdownDisplay();
+                
+                if (refreshCountdown <= 0) {
+                    // Will be reset when refreshData completes
+                }
+            }, 1000);
+        }
+
+        // Wrap refreshData to update timer
+        const originalRefreshData = refreshData;
+        refreshData = async function() {
+            const countdownEl = document.getElementById('refreshCountdown');
+            countdownEl.classList.add('refreshing');
+            countdownEl.textContent = 'Refreshing...';
+            
+            await originalRefreshData();
+            
+            // Update tracking
+            refreshCount++;
+            lastRefreshTime = new Date();
+            updateRefreshCount();
+            updateLastRefreshTime();
+            
+            // Restart countdown
+            startCountdown();
+            
+            console.log(`[${lastRefreshTime.toLocaleTimeString()}] Data refreshed (${refreshCount} total refreshes)`);
+        };
+
         // Initialize dashboard
         refreshData();
-        setInterval(refreshData, CONFIG.REFRESH_INTERVAL);
+        
+        // Set up auto-refresh interval
+        setInterval(() => {
+            refreshData();
+        }, CONFIG.REFRESH_INTERVAL);
+        
+        // Track page load complete
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'dashboard_loaded', { 'timestamp': new Date().toISOString() });
+        }
+        
+        // Log refresh interval for verification
+        console.log(`Auto-refresh interval set to ${CONFIG.REFRESH_INTERVAL / 1000} seconds (${CONFIG.REFRESH_INTERVAL / 60000} minutes)`);
     </script>
 </body>
 </html>
