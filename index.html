@@ -927,35 +927,42 @@
         </footer>
     </div>
     
-    <!-- CountAPI / Free Visitor Counter -->
+    <!-- GoatCounter Analytics -->
+    <script data-goatcounter="https://xrp.goatcounter.com/count"
+            async src="//gc.zgo.at/count.js"></script>
+    
+    <!-- Visitor Counter using GoatCounter API -->
     <script>
-        // Visitor counter using countapi.xyz (free, no signup required)
         async function updateVisitorCount() {
-            const namespace = 'xrp-whale-watch';
-            const key = 'visitors';
+            const countEl = document.getElementById('visitorCount');
             
             try {
-                // Hit the counter (increments and returns count)
-                const response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
-                const data = await response.json();
-                
-                if (data && data.value) {
-                    const countEl = document.getElementById('visitorCount');
-                    // Animate the number
-                    animateCounter(countEl, 0, data.value, 1500);
-                }
-            } catch (error) {
-                console.log('Visitor counter unavailable:', error);
-                // Fallback: try alternative counter
-                try {
-                    const altResponse = await fetch('https://api.counterapi.dev/v1/xrp-whale-watch/visits/up');
-                    const altData = await altResponse.json();
-                    if (altData && altData.count) {
-                        document.getElementById('visitorCount').textContent = formatVisitorCount(altData.count);
+                // Fetch total pageviews from GoatCounter API
+                const response = await fetch('https://xrp.goatcounter.com/counter//.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.count) {
+                        animateCounter(countEl, 0, parseInt(data.count.replace(/,/g, '')), 1500);
+                        console.log('Visitor count from GoatCounter:', data.count);
+                        return;
                     }
-                } catch (e) {
-                    document.getElementById('visitorCount').textContent = '---';
                 }
+            } catch (e) {
+                console.log('GoatCounter API error:', e.message);
+            }
+            
+            // Fallback: localStorage counter
+            try {
+                let localCount = parseInt(localStorage.getItem('xrp_visitor_count') || '0');
+                if (!sessionStorage.getItem('xrp_counted')) {
+                    localCount++;
+                    localStorage.setItem('xrp_visitor_count', localCount.toString());
+                    sessionStorage.setItem('xrp_counted', 'true');
+                }
+                animateCounter(countEl, 0, localCount, 1500);
+                console.log('Visitor count from localStorage:', localCount);
+            } catch (e) {
+                countEl.textContent = '---';
             }
         }
         
@@ -966,16 +973,10 @@
             function update(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                
-                // Easing function
                 const easeOut = 1 - Math.pow(1 - progress, 3);
                 const current = Math.floor(start + range * easeOut);
-                
                 element.textContent = formatVisitorCount(current);
-                
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                }
+                if (progress < 1) requestAnimationFrame(update);
             }
             
             requestAnimationFrame(update);
@@ -987,8 +988,8 @@
             return num.toLocaleString();
         }
         
-        // Update visitor count on page load
-        updateVisitorCount();
+        // Update visitor count on page load (with slight delay to let GoatCounter initialize)
+        setTimeout(updateVisitorCount, 1000);
     </script>
 
     <script>
